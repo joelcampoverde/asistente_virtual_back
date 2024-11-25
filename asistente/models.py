@@ -66,7 +66,7 @@ class Evento(models.Model):
     modalidad = models.ForeignKey(Modalidad, on_delete=models.CASCADE, related_name="eventos")
     descripcion = models.CharField(max_length=200)
     fecha_inicio = models.DateTimeField()
-    fecha_fin = models.DateTimeField()
+    fecha_fin = models.DateTimeField(null=True, blank=True)
 
     def __str__(self):
         return self.descripcion
