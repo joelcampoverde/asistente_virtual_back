@@ -5,13 +5,15 @@ from .serializers import EventoSerializer
 from django.contrib.auth.models import User
 
 class EventoView(viewsets.ModelViewSet):
-    serializer_class= EventoSerializer
-    queryset= Evento.objects.all()
+    serializer_class = EventoSerializer
+    queryset = Evento.objects.all()
     permission_classes = [IsAuthenticated]
 
     def get_queryset(self):
-        # Retorna los eventos relacionados con la agenda del usuario autenticado
+        # Filtra los eventos relacionados con la agenda del usuario autenticado
         return Evento.objects.filter(agenda__usuario=self.request.user)
 
     def perform_create(self, serializer):
-        serializer.save(agenda=self.request.user.agenda)
+        # Asocia automáticamente la agenda basada en el usuario autenticado
+        agenda = self.request.user.agenda  # Relación uno a uno
+        serializer.save(agenda=agenda)
