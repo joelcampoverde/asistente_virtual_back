@@ -1,7 +1,7 @@
 # views.py
 import os
 
-from rest_framework.permissions import AllowAny
+from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
@@ -57,3 +57,19 @@ class GoogleLoginView(APIView):
 
 class CustomTokenRefreshView(TokenRefreshView):
     permission_classes = [AllowAny]
+
+class DeleteAccountView(APIView):
+    permission_classes = [IsAuthenticated]  # Solo usuarios autenticados pueden eliminar su cuenta
+
+    def delete(self, request):
+        try:
+            # El usuario autenticado está en `request.user`
+            user = request.user
+
+            # Elimina al usuario
+            user.delete()
+
+            return Response({'message': 'Cuenta eliminada exitosamente.'}, status=status.HTTP_200_OK)
+
+        except Exception as e:
+            return Response({'error': f'Error al eliminar la cuenta: {str(e)}'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
